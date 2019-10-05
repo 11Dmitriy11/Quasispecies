@@ -38,6 +38,10 @@ def main():
        #cmd = f'gunzip ./fastq/{name}.fastq.gz'
        #os.system(cmd)
        #apps(name)
-  
+       go = '{print $1, $2, $3, $4, $5}'
+       goo = f'cat {name}_varscan_results.vcf'
+       cmd = f"{goo} | awk '{go}' >> results.txt"
+       os.system(cmd)
+
 if __name__=='__main__':
    main()
