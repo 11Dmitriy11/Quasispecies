@@ -1,8 +1,9 @@
 #Quasispecies
-
+```
 ##Dependencies
-
-you need to have python3.6 or higher   
+```
+```
+you need to have python3.6 or higher 
 
 ## How to use
 ```
