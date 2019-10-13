@@ -2,6 +2,8 @@ import os
 import argparse
 import re
 from Bio import Entrez
+import pandas as pd
+import statistics as st
 
 def apps(name, deep):
        cmd = f'bwa mem ./fasta/influensa_hemmaglutinin.fasta ./fastq/{name}.fastq | samtools view -S -b - | samtools sort  -o ./bam/{name}_sorted.bam'
@@ -10,6 +12,26 @@ def apps(name, deep):
        os.system(cmd)
        cmd = f'samtools mpileup -d {deep} -f ./fasta/influensa_hemmaglutinin.fasta ./bam/{name}_sorted.bam | varscan mpileup2snp --min-var-freq 0.001 --variants --output-vcf 1 > {name}_varscan_results.vcf'
        os.system(cmd)
+
+def snps(names):
+    means = []
+    sts =[]
+    names = ['SRR1705851','SRR1705858','SRR1705859','SRR1705860']
+    df = pd.read_csv('results_id.txt', sep = ' ', encoding='utf-8', dayfirst=True)
+    df =df.replace('%','', regex=True)
+    df =df.replace(',','.', regex=True)
+    df['Freq']=df['Freq'].astype(float)
+    for i in range (1,len(names)):
+        l = df['Freq'][df.Assembly == f'{names[i]}']
+        local_mean = st.mean(l)
+        local_sd = st.stdev(l)
+        means += [local_mean]
+        sts += [local_sd]
+
+    treshold = st.mean([means[x]+3*sts[x] for x in range(len(means))])
+    SNPS = df[df.Freq > treshold][df.Assembly == f'{names[0]}']
+    SNPS.to_csv('SNPS.csv')
+
 
 
 def main():
@@ -72,9 +94,11 @@ def main():
         A=f.read()      
         A=A.replace(':',' ')   
   with open('results_id.txt','w') as f:
+         f.write('CHROM POS ID REF ALT QUAL FILTER INFO V1 V2 Freq V1 V2 V3 V4 V5 V6 V7 Assembly\n')
          f.write(A)
   print(A)
   os.remove('./results.txt')
+  snps(names)
   
 if __name__=='__main__':
    main()
