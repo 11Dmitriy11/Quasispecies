@@ -62,7 +62,12 @@ def main():
        cmd = f'gunzip ./fastq/{name}.fastq.gz'
        os.system(cmd)
        reads = sum(1 for line in open(f'./fastq/{name}.fastq'))/4
-       deep = int(reads*150/1665)
+       with open(f'./fastq/{name}.fastq', 'r') as r:
+            lines=r.readlines()
+       av=max(len(lines[i].replace('\n','')) for i in range(1,len(lines),4))
+       deep = int(reads*av/1665)
+       print(deep)
+       print(av)
        apps(name, deep)
        go = ' NR> 24 {print $1, $2, $4, $5, $10}'
        goo = f'cat {name}_varscan_results.vcf'
@@ -96,7 +101,7 @@ def main():
   with open('results_id.txt','w') as f:
          f.write('CHROM POS ID REF ALT QUAL FILTER INFO V1 V2 Freq V1 V2 V3 V4 V5 V6 V7 Assembly\n')
          f.write(A)
-  print(A)
+  #print(A)
   os.remove('./results.txt')
   snps(names)
   
