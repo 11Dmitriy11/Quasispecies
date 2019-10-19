@@ -16,7 +16,6 @@ def apps(name, deep):
 def snps(names):
     means = []
     sts =[]
-    names = ['SRR1705851','SRR1705858','SRR1705859','SRR1705860']
     df = pd.read_csv('results_id.txt', sep = ' ', encoding='utf-8', dayfirst=True)
     df =df.replace('%','', regex=True)
     df =df.replace(',','.', regex=True)
