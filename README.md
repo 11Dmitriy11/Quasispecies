@@ -10,3 +10,4 @@ Each link in new line.
 Assembly in the first line will be analyzed for SNIPs.
 
 *text*
+* text
